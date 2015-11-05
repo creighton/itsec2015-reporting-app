@@ -1,0 +1,60 @@
+<head>
+    <title>report</title>
+</head>
+
+
+<template name="main">
+    <div class="container">
+        {{> banner}}
+        {{> fiftycalhitmiss}}
+        {{> yield}}
+    </div>
+</template>
+
+
+<template name="banner">
+    <a href="{{pathFor route='home'}}">Home</a>
+    <button class="btn btn-default btn-xs pull-right" id="hook">{{#if hasHook}}Unhook{{else}}Hook{{/if}}</button> 
+</template>
+
+
+<template name="home">
+    {{> attempts}}
+    {{> stmts}}
+</template>
+
+
+<template name="attempts">
+    <h2>Attempts</h2>
+    <ul>
+        {{#each attempt}}
+            <li><a href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
+        {{/each}}
+    </ul>
+</template>
+
+
+<template name="fiftycalhitmiss">
+    <h1>Hit/Miss Stats</h1>
+    {{#with info attemptid}}
+        number of bursts: {{count}} <br>
+        total shots: {{totalshots}} <br>
+        total hits: {{totalhits}} <br>
+        hit ratio: {{ratio}}
+    {{/with}}
+</template>
+
+
+<template name="stmts">
+   <h2>Statements</h2>
+    <ul>
+        {{#each statement attemptid}}
+            {{> stmt}}
+        {{/each}}
+    </ul>
+</template>
+
+
+<template name="stmt">
+    <li>({{_timestamp}}):  {{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</li>
+</template>

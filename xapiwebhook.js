@@ -10,11 +10,37 @@ if (Meteor.isClient) {
         }
     });
     
-    Template.overview.helpers({
-        info: function() {
-            var bursts = Statements.find({
-                "object.definition.type":"https://sandbox.adlnet.gov/activity/types/50CalBurst"
+    // only way i could find to deal with the en-US property
+    // this is also very similar to the one used in the stmt helper
+    Template.attempts.helpers({
+        attempt: function() {
+            return Statements.find({"verb.id":"https://sandbox.adlnet.gov/verbs/started"}, {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                return decodeKeys(c);
             });
+        },
+        objectDisplay: function (object) {
+            var disp = object.id;
+            if (object.definition) {
+                disp = (object.definition.description ? object.definition.description['en-US']+" ":disp);
+            }
+            return disp;
+        }
+    });
+    
+    Template.fiftycalhitmiss.helpers({
+        info: function(attemptid) {
+            if (attemptid) {
+                var bursts = Statements.find(
+                                {"context.contextActivities.grouping":
+                                    {$elemMatch: { "id":attemptid }},
+                                 "object.definition.type": "https://sandbox.adlnet.gov/activity/types/50CalBurst"
+                                }, 
+                                {sort: {_timestamp: -1}});
+            } else {
+                var bursts = Statements.find({
+                    "object.definition.type":"https://sandbox.adlnet.gov/activity/types/50CalBurst"
+                });
+            }
             var ct = bursts.count();
             var stats = bursts.map(function(s) {return [s.result.score.max, s.result.score.raw]});
             var shots = stats.reduce(function(a, b) { return a + b[0]; }, 0);
@@ -31,10 +57,20 @@ if (Meteor.isClient) {
     
     // 'stmts' template functions
     Template.stmts.helpers({
-        statement: function() {
-            return Statements.find({}, {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
-                return decodeKeys(c);
-            });
+        statement: function(attemptid) {
+            if (attemptid) {
+                return Statements.find(
+                            {"context.contextActivities.grouping":
+                                {$elemMatch: { "id":attemptid }}
+                            }, 
+                            {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                                return decodeKeys(c);
+                            });
+            } else {
+                return Statements.find({}, {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                    return decodeKeys(c);
+                });
+            }
         }
     });
     
@@ -159,8 +195,24 @@ if (Meteor.isServer) {
     });
 
 }// ending is server here 
-    
-Router.route('/');
+ 
+Router.configure({
+    layoutTemplate: 'main'
+});
+
+Router.route('/', {
+    template: 'home',
+    name: 'home'
+});
+
+Router.route('/attempt/:_id', {
+    template: 'stmts',
+    data: function () {
+        var attstmt = Statements.findOne({_id: this.params._id});
+        return { attemptid: attstmt.object.id };
+    }
+});
+
 Router.route('/xapi/webhook', {where: 'server'})
     .post(function() {
         try {
@@ -180,6 +232,9 @@ Router.route('/xapi/webhook', {where: 'server'})
         
     });
 
+// mongo blows up with json keys that are uris (like in extensions)
+// so we have to take extensions and turn the whole thing into strings
+// to save them in the database
 var encodeKeys = function (stmt) {
     for( var key in stmt ) {
         if (stmt.hasOwnProperty(key) && stmt[key].extensions) {
@@ -189,6 +244,9 @@ var encodeKeys = function (stmt) {
     return stmt;
 }
 
+// when we pull the statements back out of mongo, this call will
+// walk through a statement and turn the extensions back into 
+// objects
 var decodeKeys = function (stmt) {
     for( var key in stmt ) {
         if (stmt.hasOwnProperty(key) && stmt[key].extensions) {
@@ -197,40 +255,3 @@ var decodeKeys = function (stmt) {
     }
     return stmt;
 }
-
-//Router.route('/xapi/me/statements/hooks', {where: 'server'})
-//    .post(function () {
-//        try {
-//            var hook = this.request.body;
-//            var hid = LRSHooks.findOne({'name': hook.name});
-//            if (!hid) {
-//                hid = LRSHooks.insert(hook);
-//            }
-//            var loc = 'http://localhost:3000/xapi/me/statements/hooks/' + hid;
-//            this.response.writeHead(201, {"Content-Type":"application/json", "Location":loc});
-//            hook.id = hid;
-//            hook.url = loc;
-//            this.response.write(JSON.stringify(hook, null, 4));
-////            this.response.write(JSON.stringify(hook, null, 4));
-//            this.response.end();
-//        } catch (e) {
-//            this.response.writeHead(500, {"Content-Type":"text/plain"});
-//            this.response.write(e.message);
-//            this.response.end();
-//        }
-//    });
-//Router.route('/xapi/me/statements/hooks/:id', {where: 'server'})
-//    .delete(function () {
-//        try {
-//            console.log('delete..', this.params.id);
-//            LRSHooks.remove({'_id':this.params.id});
-//            this.response.writeHead(204);
-//            this.response.end();
-//        } catch (e) {
-//            this.response.writeHead(500, {"Content-Type":"text/plain"});
-//            this.response.write(e.message);
-//            this.response.end();
-//        }
-//    });
-
-
