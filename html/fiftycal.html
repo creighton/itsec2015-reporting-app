@@ -1,21 +1,36 @@
+<template name="fiftycalstats">
+    <div class="row">
+        <div class="col-xs-6">
+            {{> fiftycalhitmiss}}
+        </div>
+        <div class="col-xs-6">
+            {{> fiftycalhitpercentgauge}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            {{> fiftycalhitshotchart}}
+        </div>
+    </div>
+</template>
+   
+
 <template name="fiftycalhitmiss">
-        {{#with info}}
-    <div class="col-xs-6">
-        <h1>Hit/Miss Stats</h1>
-            number of bursts: {{count}} <br>
-            total shots: {{totalshots}} <br>
-            total hits: {{totalhits}} <br>
-            hit ratio: {{ratio}}
-    </div>
-    <div class="col-xs-6">
-       {{> fiftycalshotgauge attemptid=attemptid totalshots=totalshots totalhits=totalhits}}
-    </div>
-        {{/with}}
+    {{#with info}}
+    <h1>Hit/Miss Stats</h1>
+        number of bursts: {{count}} <br>
+        total shots: {{totalshots}} <br>
+        total hits: {{totalhits}} <br>
+        hit ratio: {{ratio}}
+    {{/with}}
 </template>
 
 
-
-<template name="fiftycalshotgauge">
-    <div id="fiftycalChart" style="height: 200px; width: 200px;"></div>
+<template name="fiftycalhitpercentgauge">
+    <div id="fiftycalHitPercentGauge" style="height: 200px; width: 200px;"></div>
 </template>
 
+
+<template name="fiftycalhitshotchart">
+    <div id="fiftycalHitShotChart" style="height: 100%; width: 100%;"></div>  
+</template>
