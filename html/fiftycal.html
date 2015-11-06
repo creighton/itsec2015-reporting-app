@@ -1,0 +1,21 @@
+<template name="fiftycalhitmiss">
+        {{#with info}}
+    <div class="col-xs-6">
+        <h1>Hit/Miss Stats</h1>
+            number of bursts: {{count}} <br>
+            total shots: {{totalshots}} <br>
+            total hits: {{totalhits}} <br>
+            hit ratio: {{ratio}}
+    </div>
+    <div class="col-xs-6">
+       {{> fiftycalshotgauge attemptid=attemptid totalshots=totalshots totalhits=totalhits}}
+    </div>
+        {{/with}}
+</template>
+
+
+
+<template name="fiftycalshotgauge">
+    <div id="fiftycalChart" style="height: 200px; width: 200px;"></div>
+</template>
+

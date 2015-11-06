@@ -5,22 +5,40 @@
 
 <template name="main">
     <div class="container">
-        {{> banner}}
-        {{> fiftycalhitmiss}}
-        {{> yield}}
+        <div class="row">
+            <div class="col-xs-12">
+                {{> banner}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                {{> attempts}}
+            </div>
+            <div class="col-xs-9">
+                {{> yield}}
+            </div>
+        </div>
     </div>
 </template>
 
 
-<template name="banner">
-    <a href="{{pathFor route='home'}}">Home</a>
-    <button class="btn btn-default btn-xs pull-right" id="hook">{{#if hasHook}}Unhook{{else}}Hook{{/if}}</button> 
-</template>
+
 
 
 <template name="home">
-    {{> attempts}}
-    {{> stmts}}
+    {{> infopane}}
+</template>
+
+
+<template name="infopane">
+    <div class="row">
+        {{> fiftycalhitmiss}}
+    </div>
+    <div class="row">
+        <div class="col">
+            {{> stmts}}
+        </div>
+    </div>
 </template>
 
 
@@ -28,21 +46,11 @@
     <h2>Attempts</h2>
     <ul>
         {{#each attempt}}
-            <li><a href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
+            <li><a data-attemptid={{_id}} href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
         {{/each}}
     </ul>
 </template>
 
-
-<template name="fiftycalhitmiss">
-    <h1>Hit/Miss Stats</h1>
-    {{#with info attemptid}}
-        number of bursts: {{count}} <br>
-        total shots: {{totalshots}} <br>
-        total hits: {{totalhits}} <br>
-        hit ratio: {{ratio}}
-    {{/with}}
-</template>
 
 
 <template name="stmts">
