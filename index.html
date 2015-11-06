@@ -22,7 +22,14 @@
 </template>
 
 
-
+<template name="attempts">
+    <h2>Attempts</h2>
+    <ul>
+        {{#each attempt}}
+            <li><a data-attemptid={{_id}} href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
+        {{/each}}
+    </ul>
+</template>
 
 
 <template name="home">
@@ -39,30 +46,4 @@
             {{> stmts}}
         </div>
     </div>
-</template>
-
-
-<template name="attempts">
-    <h2>Attempts</h2>
-    <ul>
-        {{#each attempt}}
-            <li><a data-attemptid={{_id}} href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
-        {{/each}}
-    </ul>
-</template>
-
-
-
-<template name="stmts">
-   <h2>Statements</h2>
-    <ul>
-        {{#each statement attemptid}}
-            {{> stmt}}
-        {{/each}}
-    </ul>
-</template>
-
-
-<template name="stmt">
-    <li>({{_timestamp}}):  {{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</li>
 </template>

@@ -1,0 +1,13 @@
+<template name="stmts">
+   <h2>Statements</h2>
+    <ul>
+        {{#each statement attemptid}}
+            {{> stmt}}
+        {{/each}}
+    </ul>
+</template>
+
+
+<template name="stmt">
+    <li>({{_timestamp}}):  {{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</li>
+</template>

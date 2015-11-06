@@ -3,7 +3,9 @@ Statements = new Meteor.Collection('statements');
 Hooks = new Meteor.Collection('hooks');
 
 if (Meteor.isClient) {
+    
     Session.set('attemptid', undefined);
+    
     
     Template.main.events({
         'click a': function (event) {
@@ -25,7 +27,9 @@ if (Meteor.isClient) {
         objectDisplay: function (object) {
             var disp = object.id;
             if (object.definition) {
-                disp = (object.definition.description ? object.definition.description['en-US']+" ":disp);
+                disp = (object.definition.description 
+                        ? object.definition.description['en-US']+" "
+                        : disp);
             }
             return disp;
         }
@@ -35,9 +39,6 @@ if (Meteor.isClient) {
 
 
 if (Meteor.isServer) {
-    Meteor.startup(function () {
-    // code to run on server at startup
-    });
 
     var syncRegHook = Meteor.wrapAsync(function (callback) {
         HTTP.post('https://lrs.adlnet.gov/xapi/me/statements/hooks',
@@ -67,6 +68,7 @@ if (Meteor.isServer) {
         );
     });
     
+    
     var syncUnregHook = Meteor.wrapAsync(function (id, callback) {
         HTTP.del('https://lrs.adlnet.gov/xapi/me/statements/hooks/'+id,
           {
@@ -85,6 +87,7 @@ if (Meteor.isServer) {
         );
     });
 
+    
     Meteor.methods({
         registerHook: function () {
             var result;
@@ -110,7 +113,3 @@ if (Meteor.isServer) {
     });
 
 }// ending is server here 
- 
-
-
-
