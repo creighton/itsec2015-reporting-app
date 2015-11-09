@@ -3,8 +3,32 @@ Statements = new Meteor.Collection('statements');
 Hooks = new Meteor.Collection('hooks');
 
 if (Meteor.isClient) {
+    /*
+        Officer Of The Deck
+        Seahawk Pilot
+        Small Craft Action Team
+        Tactical Action Officer
+        Fast Attack Craft
+        Instructor
+    */
+    Meteor.startup(function(){
+        ROLES = [
+            {"_id": 0, name: "SCAT", objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team"},
+            {"_id": 1, name: "Seahawk", objid: "https://sandbox.adlnet.gov/role/Seahawk%20Pilot"},
+            {"_id": 2, name: "FAC", objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft"},
+            {"_id": 3, name: "TAO", objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer"},
+            {"_id": 4, name: "OOD", objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck"},
+            {"_id": 5, name: "Instructor", objid: "https://sandbox.adlnet.gov/role/Instructor"}
+        ];
+
+        Session.set('attemptid', undefined);
+        Session.set('roleid', 0);
+    });
     
-    Session.set('attemptid', undefined);
+    
+    Template.main.onRendered(function () {
+        $('#rolemenutabs li').first().addClass('active');
+    });
     
     
     Template.main.events({
@@ -33,7 +57,21 @@ if (Meteor.isClient) {
             }
             return disp;
         }
-    });   
+    });  
+    
+    
+    Template.rolemenu.helpers({
+        role: function () { return ROLES; }
+    });
+    
+    
+    Template.rolemenu.events({
+        'click a': function (event) {
+            $('#rolemenutabs li').removeClass('active');
+            $(event.toElement).parent().addClass('active');
+            Session.set('roleid', event.target.dataset.roleid);
+        }
+    });
 
 }// end isClient
 
@@ -41,7 +79,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
     var syncRegHook = Meteor.wrapAsync(function (callback) {
-        HTTP.post('https://lrs.adlnet.gov/xapi/me/statements/hooks',
+        HTTP.post('https://lrs.adlnet.gov/hooks',
           {
               data: {
                   "name": "xapiwebhook-itsec-vws-meteor-app",
@@ -70,7 +108,7 @@ if (Meteor.isServer) {
     
     
     var syncUnregHook = Meteor.wrapAsync(function (id, callback) {
-        HTTP.del('https://lrs.adlnet.gov/xapi/me/statements/hooks/'+id,
+        HTTP.del('https://lrs.adlnet.gov/hooks/'+id,
           {
               auth: "tom:1234",
               headers: {

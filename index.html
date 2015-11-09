@@ -11,14 +11,30 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-3">
-                {{> attempts}}
-            </div>
-            <div class="col-xs-9">
-                {{> yield}}
+            <div class="row">
+                <div class="col-xs-3">
+                    {{> attempts}}
+                </div>
+                <div class="col-xs-9">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {{> rolemenu}}
+                        </div>
+                    </div>
+                    {{> yield}}
+                </div>
             </div>
         </div>
     </div>
+</template>
+
+
+<template name="rolemenu">
+    <ul id="rolemenutabs" class="nav nav-tabs">
+        {{#each role}}
+            <li role="presentation"><a href="#" data-roleid={{_id}}>{{name}}</a></li>
+        {{/each}}
+    </ul>
 </template>
 
 
