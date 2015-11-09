@@ -22,19 +22,7 @@ if (Meteor.isClient) {
   
     
     var get50CalInfo = function () {
-        var attemptid = Session.get('attemptid');
-        if (attemptid) {
-            var bursts = Statements.find(
-                            {"context.contextActivities.grouping":
-                                {$elemMatch: { "id":attemptid }},
-                             "object.definition.type": "https://sandbox.adlnet.gov/activity/types/50CalBurst"
-                            }, 
-                            {sort: {_timestamp: -1}});
-        } else {
-            var bursts = Statements.find({
-                "object.definition.type":"https://sandbox.adlnet.gov/activity/types/50CalBurst"
-            });
-        }
+        var bursts = getBursts(Session.get('attemptid'));
         var ct = bursts.count();
         var stats = bursts.map(function(s) {return [s.result.score.max, s.result.score.raw]});
         var shots = stats.reduce(function(a, b) { return a + b[0]; }, 0);
@@ -46,6 +34,25 @@ if (Meteor.isClient) {
             "totalhits":hits, 
             "ratio":ratio
         };
+    };
+    
+    
+    var getBursts = function (attemptid, ord) {
+        var order = ord || -1;
+        if (attemptid) {
+            var bursts = Statements.find(
+                            {"context.contextActivities.grouping":
+                                {$elemMatch: { "id":attemptid }},
+                             "object.definition.type": "https://sandbox.adlnet.gov/activity/types/50CalBurst"
+                            }, 
+                            {sort: {_timestamp: order}});
+        } else {
+            var bursts = Statements.find({
+                "object.definition.type":"https://sandbox.adlnet.gov/activity/types/50CalBurst"
+            }, 
+            {sort: {_timestamp: order}});
+        }
+        return bursts;
     };
     
     
@@ -126,33 +133,43 @@ if (Meteor.isClient) {
     };
     
     
+    // see: http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/combo-multi-axes/
     var buildHitShotChart = function () {
+        var bursts = getBursts(Session.get('attemptid'), 1);
         $('#fiftycalHitShotChart').highcharts({
             chart: {
                 zoomType: 'xy'
             },
             title: {
-                text: 'Average Monthly Weather Data for Tokyo'
+                text: ''
             },
-            subtitle: {
-                text: 'Source: WorldClimate.com'
+            plotOptions: {
+                series: {
+                    animation: false
+                }
+            },
+            credits: {
+                enabled: false
             },
             xAxis: [{
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                categories: bursts.map(function (cur, idx) {
+                    try {
+                        return cur.object.definition.name['en-US']
+                    } catch (e) { return cur.object.id; }
+                }),
                 crosshair: true
             }],
             yAxis: [{ // Primary yAxis
                 labels: {
-                    format: '{value}°C',
+                    format: '{value} hits',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 title: {
-                    text: 'Temperature',
+                    text: 'Hits',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 opposite: true
@@ -160,33 +177,18 @@ if (Meteor.isClient) {
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: 'Rainfall',
+                    text: 'Shots Fired',
                     style: {
                         color: Highcharts.getOptions().colors[0]
                     }
                 },
                 labels: {
-                    format: '{value} mm',
+                    format: '{value} shots',
                     style: {
                         color: Highcharts.getOptions().colors[0]
                     }
                 }
 
-            }, { // Tertiary yAxis
-                gridLineWidth: 0,
-                title: {
-                    text: 'Sea-Level Pressure',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                labels: {
-                    format: '{value} mb',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                opposite: true
             }],
             tooltip: {
                 shared: true
@@ -201,33 +203,20 @@ if (Meteor.isClient) {
                 backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
             },
             series: [{
-                name: 'Rainfall',
+                name: 'Shots Fired',
                 type: 'column',
                 yAxis: 1,
-                data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+                data: bursts.map(function(s) {return s.result.score.max;}),
                 tooltip: {
-                    valueSuffix: ' mm'
+                    valueSuffix: ' shots'
                 }
 
             }, {
-                name: 'Sea-Level Pressure',
+                name: 'Hits',
                 type: 'spline',
-                yAxis: 2,
-                data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-                marker: {
-                    enabled: false
-                },
-                dashStyle: 'shortdot',
+                data: bursts.map(function(s) {return s.result.score.raw;}),
                 tooltip: {
-                    valueSuffix: ' mb'
-                }
-
-            }, {
-                name: 'Temperature',
-                type: 'spline',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-                tooltip: {
-                    valueSuffix: ' °C'
+                    valueSuffix: ' hits'
                 }
             }]
         });
