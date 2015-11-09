@@ -1,9 +1,14 @@
 <template name="fiftycalstats">
     <div class="row">
+        <div class="col-xs-12">
+            <h2>Hit/Miss Stats</h2>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-xs-6">
             {{> fiftycalhitmiss}}
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-6" style="top: -30px">
             {{> fiftycalhitpercentgauge}}
         </div>
     </div>
@@ -16,13 +21,14 @@
    
 
 <template name="fiftycalhitmiss">
+    <dl class="dl-horizontal">
     {{#with info}}
-    <h2>Hit/Miss Stats</h2>
-        number of bursts: {{count}} <br>
-        total shots: {{totalshots}} <br>
-        total hits: {{totalhits}} <br>
-        hit ratio: {{ratio}}
+        <dt>weapon bursts:</dt> <dd>{{count}}</dd> <br>
+        <dt>total shots:</dt> <dd>{{totalshots}}</dd> <br>
+        <dt>total hits:</dt> <dd>{{totalhits}}</dd> <br>
+        <dt>hit ratio:</dt> <dd>{{ratio}}</dd>
     {{/with}}
+    </dl>
 </template>
 
 

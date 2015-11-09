@@ -23,12 +23,19 @@
 
 
 <template name="attempts">
-    <h2>Attempts</h2>
-    <ul>
-        {{#each attempt}}
-            <li><a data-attemptid={{_id}} href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
-        {{/each}}
-    </ul>
+    <div id="sidebar" class="well sidebar-nav" style="margin-top: 30px">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{{pathFor route='home'}}">Home</a></li>
+        </ul>
+        <h5>
+            <small><b>ATTEMPTS</b></small>
+        </h5>
+        <ul class="nav nav-pills nav-stacked">
+            {{#each attempt}}
+                <li><a data-attemptid={{_id}} href="/attempt/{{_id}}">{{objectDisplay object}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
 </template>
 
 
