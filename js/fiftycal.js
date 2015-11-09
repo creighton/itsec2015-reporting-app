@@ -86,9 +86,9 @@ if (Meteor.isClient) {
 
             yAxis: {
                 stops: [
-                    [0.1, '#FF0000'], // red
-                    [0.5, '#DDDF0D'], // yellow
-                    [0.9, '#55BF3B'] // green
+                    [0.1, Highcharts.getOptions().colors[8]], // red
+                    [0.5, Highcharts.getOptions().colors[6]], // yellow
+                    [0.9, Highcharts.getOptions().colors[3]] // green
                 ],
                 minorTickInterval: null,
                 tickPixelInterval: null,
@@ -136,88 +136,80 @@ if (Meteor.isClient) {
     // see: http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/combo-multi-axes/
     var buildHitShotChart = function () {
         var bursts = getBursts(Session.get('attemptid'), 1);
+        var shots = bursts.map(function(s) {return s.result.score.raw;})
+        var maxshots = Math.max.apply( Math, shots );
         $('#fiftycalHitShotChart').highcharts({
             chart: {
-                zoomType: 'xy'
+                type: 'column'
             },
+            
             title: {
                 text: ''
             },
-            plotOptions: {
-                series: {
-                    animation: false
-                }
-            },
+            
             credits: {
                 enabled: false
             },
-            xAxis: [{
+            
+            plotOptions: {
+                series: {
+                    animation: false
+                },
+                column: {
+                    grouping: false,
+                    shadow: false,
+                    borderWidth: 0
+                }
+            },
+            
+            xAxis: {
                 categories: bursts.map(function (cur, idx) {
                     try {
                         return cur.object.definition.name['en-US']
                     } catch (e) { return cur.object.id; }
                 }),
                 crosshair: true
-            }],
-            yAxis: [{ // Primary yAxis
-                labels: {
-                    format: '{value} hits',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                title: {
-                    text: 'Hits',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                opposite: true
-
-            }, { // Secondary yAxis
-                gridLineWidth: 0,
+            },
+            
+            yAxis: [{
+                min: 0,
                 title: {
                     text: 'Shots Fired',
                     style: {
                         color: Highcharts.getOptions().colors[0]
                     }
-                },
-                labels: {
-                    format: '{value} shots',
-                    style: {
-                        color: Highcharts.getOptions().colors[0]
-                    }
                 }
-
+            }, {
+                title: {
+                    text: 'Shots Hit',
+                    style: {
+                        color: Highcharts.getOptions().colors[8]
+                    }
+                },
+                opposite: true
             }],
+            
             tooltip: {
                 shared: true
             },
-            legend: {
-                layout: 'vertical',
-                align: 'left',
-                x: 80,
-                verticalAlign: 'top',
-                y: 55,
-                floating: true,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-            },
+            
             series: [{
-                name: 'Shots Fired',
-                type: 'column',
-                yAxis: 1,
+                name: 'Fired',
+                color: Highcharts.getOptions().colors[0],
                 data: bursts.map(function(s) {return s.result.score.max;}),
                 tooltip: {
                     valueSuffix: ' shots'
-                }
+                },
+                pointPadding: 0
 
             }, {
-                name: 'Hits',
-                type: 'spline',
+                name: 'Hit',
+                color: Highcharts.getOptions().colors[8],
                 data: bursts.map(function(s) {return s.result.score.raw;}),
                 tooltip: {
                     valueSuffix: ' hits'
-                }
+                },
+                pointPadding: 0.1
             }]
         });
     };
