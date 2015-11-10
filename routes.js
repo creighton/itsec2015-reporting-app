@@ -14,8 +14,14 @@ Router.route('/', {
 Router.route('/attempt/:_id', {
     template: 'infopane',
     onBeforeAction: function () {
-        var attstmt = Statements.findOne({_id: this.params._id});
-        Session.set('attemptid', attstmt.object.id);
+        try {
+            var attstmt = Statements.findOne({_id: this.params._id});
+            Session.set('attemptid', attstmt.object.id);
+        } catch (e) { 
+            console.log('exception getting statement with id: ' + this.params._id);
+            console.log(e);
+            Session.set('attemptid', undefined);
+        }
         this.next();
     }
 });

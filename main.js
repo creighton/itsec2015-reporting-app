@@ -29,15 +29,8 @@ if (Meteor.isClient) {
     Template.main.onRendered(function () {
         $('#rolemenutabs li').first().addClass('active');
     });
-    
-    
-//    Template.main.events({
-//        'click a': function (event) {
-//            Session.set('attemptid', event.target.dataset.attemptid);
-//        }
-//    });
-    
 
+    
     // only way i could find to deal with the en-US property
     // this is also very similar to the one used in the stmt helper
     Template.attempts.helpers({
