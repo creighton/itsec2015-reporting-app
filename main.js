@@ -13,12 +13,42 @@ if (Meteor.isClient) {
     */
     Meteor.startup(function(){
         ROLES = [
-            {"_id": 0, name: "SCAT", objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team"},
-            {"_id": 1, name: "Seahawk", objid: "https://sandbox.adlnet.gov/role/Seahawk%20Pilot"},
-            {"_id": 2, name: "FAC", objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft"},
-            {"_id": 3, name: "TAO", objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer"},
-            {"_id": 4, name: "OOD", objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck"},
-            {"_id": 5, name: "Instructor", objid: "https://sandbox.adlnet.gov/role/Instructor"}
+            {
+                "_id": 0, 
+                name: "SCAT", 
+                objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team", 
+                template: "fiftycalstats"
+            },
+            {
+                "_id": 1, 
+                name: "Seahawk", 
+                objid: "https://sandbox.adlnet.gov/role/Seahawk%20Pilot", 
+                template: "seahawk"
+            },
+            {
+                "_id": 2, 
+                name: "FAC", 
+                objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft", 
+                template: "butts"
+            },
+            {
+                "_id": 3, 
+                name: "TAO", 
+                objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer", 
+                template: "butts"
+            },
+            {
+                "_id": 4, 
+                name: "OOD", 
+                objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck", 
+                template: "butts"
+            },
+            {
+                "_id": 5, 
+                name: "Instructor", 
+                objid: "https://sandbox.adlnet.gov/role/Instructor", 
+                template: "butts"
+            }
         ];
 
         Session.set('attemptid', undefined);
@@ -63,6 +93,16 @@ if (Meteor.isClient) {
             $('#rolemenutabs li').removeClass('active');
             $(event.toElement).parent().addClass('active');
             Session.set('roleid', event.target.dataset.roleid);
+        }
+    });
+    
+    
+    Template.infopane.helpers({
+        roleIs: function (roleid) {
+            return Session.get('roleid') == roleid;
+        },
+        chooseTemplate: function () {
+            return {template: ROLES[Session.get('roleid')].template};
         }
     });
 

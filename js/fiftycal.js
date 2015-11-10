@@ -28,7 +28,6 @@ if (Meteor.isClient) {
         var shots = stats.reduce(function(a, b) { return a + b[0]; }, 0);
         var hits = stats.reduce(function(a, b) { return a + b[1]; }, 0);
         var ratio = +(hits/shots).toFixed(2);
-        console.log(Session.get('attemptid'));
         return {
             "count": ct, 
             "totalshots": shots, 

@@ -62,7 +62,9 @@
 
 <template name="infopane">
     <div class="row">
-        {{> fiftycalstats}}
+        {{#with chooseTemplate}}
+            {{> Template.dynamic template=template data=data}}
+        {{/with}}
     </div>
     <div class="row">
         <div class="col">
