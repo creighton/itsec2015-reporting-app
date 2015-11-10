@@ -29,25 +29,25 @@ if (Meteor.isClient) {
                 "_id": 2, 
                 name: "FAC", 
                 objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft", 
-                template: "butts"
+                template: "fac"
             },
             {
                 "_id": 3, 
                 name: "TAO", 
                 objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer", 
-                template: "butts"
+                template: "tao"
             },
             {
                 "_id": 4, 
                 name: "OOD", 
                 objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck", 
-                template: "butts"
+                template: "ood"
             },
             {
                 "_id": 5, 
                 name: "Instructor", 
                 objid: "https://sandbox.adlnet.gov/role/Instructor", 
-                template: "butts"
+                template: "instructor"
             }
         ];
 
