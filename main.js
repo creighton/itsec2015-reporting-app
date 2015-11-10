@@ -31,11 +31,11 @@ if (Meteor.isClient) {
     });
     
     
-    Template.main.events({
-        'click a': function (event) {
-            Session.set('attemptid', event.target.dataset.attemptid);
-        }
-    });
+//    Template.main.events({
+//        'click a': function (event) {
+//            Session.set('attemptid', event.target.dataset.attemptid);
+//        }
+//    });
     
 
     // only way i could find to deal with the en-US property

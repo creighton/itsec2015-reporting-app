@@ -4,7 +4,11 @@ Router.configure({
 
 Router.route('/', {
     template: 'home',
-    name: 'home'
+    name: 'home',
+    onBeforeAction: function () {
+        Session.set('attemptid', undefined);
+        this.next();
+    }
 });
 
 Router.route('/attempt/:_id', {
