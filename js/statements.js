@@ -6,13 +6,19 @@ if (Meteor.isClient) {
             if (attemptid) {
                 return Statements.find(
                             {"context.contextActivities.grouping":
-                                {$elemMatch: { "id":attemptid }}
+                                {$elemMatch: { "id":attemptid }},
+                             "context.contextActivities.category":
+                                {$elemMatch: { "id":ROLES[Session.get('roleid')].objid}}
                             },
                             {limit: 15, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                                 return decodeKeys(c);
                             });
             } else {
-                return Statements.find({}, {limit: 15, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                return Statements.find(
+                            {"context.contextActivities.category":
+                                {$elemMatch: { "id":ROLES[Session.get('roleid')].objid}}
+                            }, 
+                            {limit: 15, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                     return decodeKeys(c);
                 });
             }
