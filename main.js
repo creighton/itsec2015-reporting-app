@@ -180,6 +180,9 @@ if (Meteor.isServer) {
             } finally {
                 return undefined;
             }
+        },
+        purgeDB: function () {
+            Statements.remove({});
         }
     });
 

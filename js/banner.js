@@ -26,6 +26,9 @@ if (Meteor.isClient) {
                     else console.log(err);
                 });
             }
+        },
+        'click #purge': function (event) {
+            Meteor.call('purgeDB');
         }
     });
     
