@@ -57,7 +57,7 @@ if (Meteor.isClient) {
     
     
     var buildHitPercentGauge = function () {
-        var data = [get50CalInfo().ratio * 100];
+        var data = [+(get50CalInfo().ratio * 100).toFixed(2)];
 
         chart = $('#fiftycalHitPercentGauge').highcharts({
 

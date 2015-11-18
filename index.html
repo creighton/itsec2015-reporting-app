@@ -61,6 +61,13 @@
 
 
 <template name="infopane">
+    {{#with chooseTemplate}}
+        {{> Template.dynamic template=template data=data}}
+    {{/with}}
+</template>
+
+<!--
+<template name="infopane">
     <div class="row">
         {{#with chooseTemplate}}
             {{> Template.dynamic template=template data=data}}
@@ -72,3 +79,4 @@
         </div>
     </div>
 </template>
+-->

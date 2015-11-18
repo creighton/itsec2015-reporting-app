@@ -16,8 +16,8 @@ if (Meteor.isClient) {
             {
                 "_id": 0, 
                 name: "SCAT", 
-                objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team", 
-                template: "fiftycalstats"
+                objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team",
+                template: "scat"
             },
             {
                 "_id": 1, 
@@ -67,7 +67,7 @@ if (Meteor.isClient) {
         attempt: function() {
             return Statements.find(
                     {"verb.id":"https://sandbox.adlnet.gov/verbs/started"}, 
-                    {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                    {limit: 10, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                         return decodeKeys(c);
                     });
         },

@@ -7,12 +7,12 @@ if (Meteor.isClient) {
                 return Statements.find(
                             {"context.contextActivities.grouping":
                                 {$elemMatch: { "id":attemptid }}
-                            }, 
-                            {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                            },
+                            {limit: 15, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                                 return decodeKeys(c);
                             });
             } else {
-                return Statements.find({}, {sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
+                return Statements.find({}, {limit: 15, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                     return decodeKeys(c);
                 });
             }
