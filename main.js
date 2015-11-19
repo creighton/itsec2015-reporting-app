@@ -3,6 +3,7 @@ Statements = new Meteor.Collection('statements');
 Hooks = new Meteor.Collection('hooks');
 
 if (Meteor.isClient) {
+    Meteor.subscribe('statements');
     /*
         Officer Of The Deck
         Seahawk Pilot
@@ -84,7 +85,8 @@ if (Meteor.isClient) {
     
     
     Template.rolemenu.helpers({
-        role: function () { return ROLES; }
+        role: function () { return ROLES; },
+        enable: function (id) { return id == 0; }
     });
     
     
@@ -110,6 +112,10 @@ if (Meteor.isClient) {
 
 
 if (Meteor.isServer) {
+    
+    Meteor.publish('statements', function () {
+        return Statements.find({},{limit:1000, sort: {_timestamp: -1}});
+    });
 
     var syncRegHook = Meteor.wrapAsync(function (callback) {
         HTTP.post('https://lrs.adlnet.gov/hooks',
@@ -121,7 +127,16 @@ if (Meteor.isServer) {
                       "content-type": "application/json"
                   },
                   "filters": {
-                      "related": [{"id":"https://sandbox.adlnet.gov/event/2015/iitsecdemo"}]
+                      "verb": [{"id":"https://sandbox.adlnet.gov/verbs/started"},{"id":"https://sandbox.adlnet.gov/verbs/fired"}],
+                      "related": [
+                          {"and": [
+                              {"id":"https://sandbox.adlnet.gov/event/2015/iitsecdemo"},
+                              {"or": [
+                                  {"id":"https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team"},
+                                  {"id":"https://sandbox.adlnet.gov/role/Start%20Screen"}
+                              ]}
+                          ]}
+                      ]
                   }
               },
               auth: "tom:1234",
