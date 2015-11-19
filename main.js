@@ -4,6 +4,7 @@ Hooks = new Meteor.Collection('hooks');
 
 if (Meteor.isClient) {
     Meteor.subscribe('statements');
+    Meteor.subscribe('hooks');
     /*
         Officer Of The Deck
         Seahawk Pilot
@@ -115,6 +116,10 @@ if (Meteor.isServer) {
     
     Meteor.publish('statements', function () {
         return Statements.find({},{limit:1000, sort: {_timestamp: -1}});
+    });
+    
+    Meteor.publish('hooks', function () {
+        return Hooks.find();
     });
 
     var syncRegHook = Meteor.wrapAsync(function (callback) {
