@@ -126,7 +126,7 @@ if (Meteor.isServer) {
         HTTP.post('https://lrs.adlnet.gov/hooks',
           {
               data: {
-                  "name": "xapiwebhook-itsec-vws-meteor-app",
+                  "name": "xapiwebhook-itsec-vws-meteor-app-limited",
                   "config": {
                       "endpoint": "http://40.129.74.207/xapi/webhook",
                       "content-type": "application/json"
@@ -134,13 +134,7 @@ if (Meteor.isServer) {
                   "filters": {
                       "verb": [{"id":"https://sandbox.adlnet.gov/verbs/started"},{"id":"https://sandbox.adlnet.gov/verbs/fired"}],
                       "related": [
-                          {"and": [
-                              {"id":"https://sandbox.adlnet.gov/event/2015/iitsecdemo"},
-                              {"or": [
-                                  {"id":"https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team"},
-                                  {"id":"https://sandbox.adlnet.gov/role/Start%20Screen"}
-                              ]}
-                          ]}
+                          {"id":"https://sandbox.adlnet.gov/event/2015/iitsecdemo"}
                       ]
                   }
               },

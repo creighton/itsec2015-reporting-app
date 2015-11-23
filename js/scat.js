@@ -37,7 +37,7 @@ if (Meteor.isClient) {
     };
     
     
-    var getBursts = function (attemptid, ord) {
+    var getBursts = function (attemptid, ord, limit) {
         var order = ord || -1;
         if (attemptid) {
             var bursts = Statements.find(
@@ -45,12 +45,12 @@ if (Meteor.isClient) {
                                 {$elemMatch: { "id":attemptid }},
                              "object.definition.type": "https://sandbox.adlnet.gov/activity/types/50CalBurst"
                             }, 
-                            {sort: {_timestamp: order}});
+                            {sort: {_timestamp: order}, limit: limit});
         } else {
             var bursts = Statements.find({
                 "object.definition.type":"https://sandbox.adlnet.gov/activity/types/50CalBurst"
             }, 
-            {sort: {_timestamp: order}});
+            {sort: {_timestamp: order}, limit: limit});
         }
         return bursts;
     };
@@ -135,7 +135,7 @@ if (Meteor.isClient) {
     
     // see: http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/combo-multi-axes/
     var buildHitShotChart = function () {
-        var bursts = getBursts(Session.get('attemptid'), 1);
+        var bursts = getBursts(Session.get('attemptid'), 1, 25);
         var shots = bursts.map(function(s) {return s.result.score.raw;})
         var maxshots = Math.max.apply( Math, shots );
         $('#fiftycalHitShotChart').highcharts({
