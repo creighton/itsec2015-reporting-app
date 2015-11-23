@@ -4,7 +4,7 @@
  */
 
 .callout-block {
-	background-color: #F5F5F0;
+	background-color: #E6EBF2;
 	border-left: 5px solid #7cb5ec;
 	border-right: 5px solid #7cb5ec;
 	padding: 15px;
@@ -27,7 +27,7 @@
 .emphasis:hover 
 {
 /*    border-top: 4px solid #7cb5ec;*/
-    background-color: #FAFACD;
+    background-color: #DAE4F2;
 }
 .emphasis h2
 {

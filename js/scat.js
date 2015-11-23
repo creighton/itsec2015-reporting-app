@@ -88,9 +88,13 @@ if (Meteor.isClient) {
 
             yAxis: {
                 stops: [
-                    [0.1, Highcharts.getOptions().colors[8]], // red
-                    [0.5, Highcharts.getOptions().colors[6]], // yellow
-                    [0.9, Highcharts.getOptions().colors[3]] // green
+//                    [0.1, Highcharts.getOptions().colors[8]], // red
+//                    [0.1, Highcharts.getOptions().colors[6]], // yellow
+//                    [0.4, Highcharts.getOptions().colors[3]], // green
+//                    [0.7, Highcharts.getOptions().colors[3]] // green
+                    [0.1, '#FF0000'],
+                    [0.5, '#FFC400'],
+                    [0.8, '#00FF00']
                 ],
                 minorTickInterval: null,
                 tickPixelInterval: null,
