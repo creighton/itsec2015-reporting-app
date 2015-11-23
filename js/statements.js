@@ -51,7 +51,7 @@ if (Meteor.isClient) {
             return moment.duration(dur).asSeconds();
         },
         accuracyDisplay: function (scaled) {
-            return Number(Math.round(scaled * 100 + 'e2') + 'e-2').toFixed(2);
+            return +Number(Math.round(scaled * 100 + 'e2') + 'e-2').toFixed(2);
         }
     });
 }
