@@ -40,6 +40,15 @@ if (Meteor.isClient) {
                 disp += (object.definition.name ? object.definition.name['en-US']:"");
             }
             return disp;
+        },
+        ago: function (ts) {
+            return moment(ts).fromNow();
+        },
+        humanDur: function (dur) {
+            return moment.duration(dur).humanize(true);
+        },
+        durAsSeconds: function (dur) {
+            return moment.duration(dur).asSeconds();
         }
     });
 }

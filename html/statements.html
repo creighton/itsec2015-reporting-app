@@ -1,13 +1,33 @@
 <template name="stmts">
    <h2>Statements</h2>
-    <ul>
+    <div class="row">
         {{#each statement attemptid}}
             {{> stmt}}
         {{/each}}
-    </ul>
+    </div>
 </template>
 
 
 <template name="stmt">
-    <li>({{_timestamp}}):  {{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</li>
+    <div class="callout-block text-center fade-in-b">
+        <h1><b>{{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</b> {{ago _timestamp}}</h1>
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{durAsSeconds result.duration}} </strong></h2>                    
+                <p><small> second burst </small></p>
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{result.score.scaled}}% </strong></h2>                    
+                <p><small> accuracy </small></p>
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{ result.score.raw}} </strong></h2>                    
+                <p><small> hits </small></p>
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{ result.score.max}} </strong></h2>                    
+                <p><small> shots </small></p>
+            </div>
+        </div>
+    </div>
 </template>

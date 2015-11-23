@@ -12,3 +12,4 @@ twbs:bootstrap
 maazalik:highcharts
 maazalik:highcharts-gauge
 mrt:nvd3js
+momentjs:moment

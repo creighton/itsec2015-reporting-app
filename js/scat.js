@@ -37,8 +37,8 @@ if (Meteor.isClient) {
     };
     
     
-    var getBursts = function (attemptid, ord, limit) {
-        var order = ord || -1;
+    var getBursts = function (attemptid, flip, limit) {
+        var order = -1;
         if (attemptid) {
             var bursts = Statements.find(
                             {"context.contextActivities.grouping":
@@ -52,6 +52,7 @@ if (Meteor.isClient) {
             }, 
             {sort: {_timestamp: order}, limit: limit});
         }
+        if (flip) bursts = bursts.fetch().reverse();
         return bursts;
     };
     
