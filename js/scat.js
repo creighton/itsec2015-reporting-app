@@ -27,7 +27,8 @@ if (Meteor.isClient) {
         var stats = bursts.map(function(s) {return [s.result.score.max, s.result.score.raw]});
         var shots = stats.reduce(function(a, b) { return a + b[0]; }, 0);
         var hits = stats.reduce(function(a, b) { return a + b[1]; }, 0);
-        var ratio = +(hits/shots).toFixed(2);
+//        var ratio = +(hits/shots).toFixed(2);
+        var ratio = +Number(Math.round((hits/shots) + 'e2') + 'e-2').toFixed(2);
         return {
             "count": ct, 
             "totalshots": shots, 
