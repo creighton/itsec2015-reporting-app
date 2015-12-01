@@ -59,17 +59,13 @@ if (Meteor.isClient) {
             if (! ext || ! ext['https://sandbox.adlnet.gov/context/extensions/shipstatus/']) return;
             return ext['https://sandbox.adlnet.gov/context/extensions/shipstatus/'].replace(/(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))/g, function($1) {return " " + $1.toLowerCase();});
         }, 
-        hitSuccess: function (res, ext) {
-            if (! ext || ! ext['https://sandbox.adlnet.gov/context/extensions/objectHit/']) return;
-            return res.success && ext['https://sandbox.adlnet.gov/context/extensions/objectHit/'] !== 'Ocean-Collision';
-        },
         hitDisplay: function (res, ext) {
             if (! ext || ! ext['https://sandbox.adlnet.gov/context/extensions/objectHit/']) return;
-            return (res.success && ext['https://sandbox.adlnet.gov/context/extensions/objectHit/'] !== 'Ocean-Collision') ? "hit" : "miss";
+            return (ishit(res,ext)) ? "hit" : "miss";
         },
         hitClass: function (res, ext) {
             if (! ext || ! ext['https://sandbox.adlnet.gov/context/extensions/objectHit/']) return;
-            return (res.success && ext['https://sandbox.adlnet.gov/context/extensions/objectHit/'] !== 'Ocean-Collision') ? "text-success" : "text-danger";
+            return (ishit(res,ext)) ? "text-success" : "text-danger";
         }
 //        durAsSeconds: function (dur) {
 //            return moment.duration(dur).asSeconds();
@@ -78,4 +74,9 @@ if (Meteor.isClient) {
 //            return +Number(Math.round(scaled * 100 + 'e2') + 'e-2').toFixed(2);
 //        }
     });
+    
+    var ishit = function (res, ext) {
+        return res.success && !(ext['https://sandbox.adlnet.gov/context/extensions/objectHit/'] === 'Ocean-Collision' || 
+                              ext['https://sandbox.adlnet.gov/context/extensions/objectHit/'] === 'Terrain');
+    };
 }
