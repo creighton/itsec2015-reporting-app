@@ -1,0 +1,38 @@
+<template name="fivein">
+    {{> fiveinstmts}}
+</template>
+
+
+<template name="fiveinstmts">
+   <h2>Statements</h2>
+    <div class="row">
+        {{#each statement attemptid}}
+            {{> fiveinstmt}}
+        {{/each}}
+    </div>
+</template>
+
+
+<template name="fiveinstmt">
+    <div class="callout-block text-center fade-in-b">
+        <h1><b>{{actor.name}} {{verbDisplay verb}} {{objectDisplay object}}</b> {{ago _timestamp}}</h1>
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{objectHit context.extensions}} </strong></h2>                    
+<!--                <p><small> object hit </small></p>-->
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong><span class="{{ hitClass result context.extensions }}"> {{ hitDisplay result context.extensions}} </span></strong></h2>                    
+<!--                <p><small> accuracy </small></p>-->
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{ roundNumber context.extensions}} </strong></h2>                    
+                <p><small> round # </small></p>
+            </div>
+            <div class="col-xs-12 col-sm-3 emphasis">
+                <h2><strong> {{ shipStatus context.extensions}} </strong></h2>                    
+<!--                <p><small> shots </small></p>-->
+            </div>
+        </div>
+    </div>
+</template>

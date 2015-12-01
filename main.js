@@ -50,6 +50,12 @@ if (Meteor.isClient) {
                 name: "Instructor", 
                 objid: "https://sandbox.adlnet.gov/role/Instructor", 
                 template: "instructor"
+            },
+            {
+                "_id": 6, 
+                name: "5\" Gun Base", 
+                objid: "https://sandbox.adlnet.gov/role/5%20inch%20gun%20base", 
+                template: "fivein"
             }
         ];
 
@@ -87,7 +93,7 @@ if (Meteor.isClient) {
     
     Template.rolemenu.helpers({
         role: function () { return ROLES; },
-        enable: function (id) { return id == 0; }
+        enable: function (id) { return id == 0 || id == 6; }
     });
     
     
