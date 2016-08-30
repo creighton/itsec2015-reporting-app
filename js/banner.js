@@ -1,13 +1,17 @@
 if (Meteor.isClient) {
-    
+
     // functions available in the body of a page
     Template.banner.helpers({
         hasHook: function() {
             return Hooks.findOne() != undefined;
+        },
+        getHookName: function() {
+            var hook = Hooks.findOne();
+            return hook && hook.name || '';
         }
     });
-    
-    
+
+
     Template.banner.events({
         'click #hook': function (event) {
             var hook = Hooks.findOne();
@@ -23,7 +27,23 @@ if (Meteor.isClient) {
                     if (!err) {
                         Hooks.insert(res);
                     }
-                    else console.log(err);
+                    else {
+                        // got an error, see if the hook already exists
+                        // if so, add to the db
+                        Meteor.call('getRegisteredHook', function (err, res) {
+                            if (!err) {
+                                for (var idx in res) {
+                                    if (res[idx].name === HOOKNAME) {
+                                        // should only ever get here if hook was
+                                        // registered outside of this app
+                                        Hooks.insert(res[idx]);
+                                        break;
+                                    }
+                                }
+                            }
+                            else console.log(err);
+                        });
+                    }
                 });
             }
         },
@@ -31,5 +51,5 @@ if (Meteor.isClient) {
             Meteor.call('purgeDB');
         }
     });
-    
+
 }

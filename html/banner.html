@@ -1,4 +1,5 @@
 <template name="banner">
-    <button class="btn btn-default btn-xs pull-right" id="hook">{{#if hasHook}}Unhook{{else}}Hook{{/if}}</button> 
+    <button class="btn btn-default btn-xs pull-right" id="hook">{{#if hasHook}}Unhook{{else}}Hook{{/if}}</button>
+    <span class="pull-right text-muted" style="margin-right: .3em">{{#if hasHook}}[{{getHookName}}]{{/if}}</span> 
     <button class="btn btn-danger btn-xs pull-left" id="purge">purge</button>
 </template>
