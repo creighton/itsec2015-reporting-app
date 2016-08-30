@@ -16,45 +16,45 @@ if (Meteor.isClient) {
     Meteor.startup(function(){
         ROLES = [
             {
-                "_id": 0, 
-                name: "SCAT", 
+                "_id": 0,
+                name: "SCAT",
                 objid: "https://sandbox.adlnet.gov/role/Small%20Craft%20Action%20Team",
                 template: "scat"
             },
             {
-                "_id": 1, 
-                name: "Seahawk", 
-                objid: "https://sandbox.adlnet.gov/role/Seahawk%20Pilot", 
+                "_id": 1,
+                name: "Seahawk",
+                objid: "https://sandbox.adlnet.gov/role/Seahawk%20Pilot",
                 template: "seahawk"
             },
             {
-                "_id": 2, 
-                name: "FAC", 
-                objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft", 
+                "_id": 2,
+                name: "FAC",
+                objid: "https://sandbox.adlnet.gov/role/Fast%20Attack%20Craft",
                 template: "fac"
             },
             {
-                "_id": 3, 
-                name: "TAO", 
-                objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer", 
+                "_id": 3,
+                name: "TAO",
+                objid: "https://sandbox.adlnet.gov/role/Tactical%20Action%20Officer",
                 template: "tao"
             },
             {
-                "_id": 4, 
-                name: "OOD", 
-                objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck", 
+                "_id": 4,
+                name: "OOD",
+                objid: "https://sandbox.adlnet.gov/role/Officer%20Of%20The%20Deck",
                 template: "ood"
             },
             {
-                "_id": 5, 
-                name: "Instructor", 
-                objid: "https://sandbox.adlnet.gov/role/Instructor", 
+                "_id": 5,
+                name: "Instructor",
+                objid: "https://sandbox.adlnet.gov/role/Instructor",
                 template: "instructor"
             },
             {
-                "_id": 6, 
-                name: "5\" Gun Base", 
-                objid: "https://sandbox.adlnet.gov/role/5%20inch%20gun%20base", 
+                "_id": 6,
+                name: "5\" Gun Base",
+                objid: "https://sandbox.adlnet.gov/role/5%20inch%20gun%20base",
                 template: "fivein"
             }
         ];
@@ -62,19 +62,19 @@ if (Meteor.isClient) {
         Session.set('attemptid', undefined);
         Session.set('roleid', 0);
     });
-    
-    
+
+
     Template.main.onRendered(function () {
         $('#rolemenutabs li').first().addClass('active');
     });
 
-    
+
     // only way i could find to deal with the en-US property
     // this is also very similar to the one used in the stmt helper
     Template.attempts.helpers({
         attempt: function() {
             return Statements.find(
-                    {"verb.id":"https://sandbox.adlnet.gov/verbs/started"}, 
+                    {"verb.id":"https://sandbox.adlnet.gov/verbs/started"},
                     {limit: 10, sort: {_timestamp: -1}}).fetch().map(function (c, i, a) {
                         return decodeKeys(c);
                     });
@@ -82,21 +82,21 @@ if (Meteor.isClient) {
         objectDisplay: function (object) {
             var disp = object.id;
             if (object.definition) {
-                disp = (object.definition.description 
+                disp = (object.definition.description
                         ? object.definition.description['en-US']+" "
                         : disp);
             }
             return disp;
         }
-    });  
-    
-    
+    });
+
+
     Template.rolemenu.helpers({
         role: function () { return ROLES; },
         enable: function (id) { return id == 0 || id == 6; }
     });
-    
-    
+
+
     Template.rolemenu.events({
         'click a': function (event) {
             $('#rolemenutabs li').removeClass('active');
@@ -104,8 +104,8 @@ if (Meteor.isClient) {
             Session.set('roleid', event.target.dataset.roleid);
         }
     });
-    
-    
+
+
     Template.infopane.helpers({
         roleIs: function (roleid) {
             return Session.get('roleid') == roleid;
@@ -119,11 +119,11 @@ if (Meteor.isClient) {
 
 
 if (Meteor.isServer) {
-    
+
     Meteor.publish('statements', function () {
         return Statements.find({},{limit:1000, sort: {_timestamp: -1}});
     });
-    
+
     Meteor.publish('hooks', function () {
         return Hooks.find();
     });
@@ -132,7 +132,7 @@ if (Meteor.isServer) {
         HTTP.post('https://lrs.adlnet.gov/hooks',
           {
               data: {
-                  "name": "xapiwebhook-itsec-vws-meteor-app-limited",
+                  "name": HOOKNAME,
                   "config": {
                       "endpoint": "http://40.129.74.207/xapi/webhook",
                       "content-type": "application/json"
@@ -150,16 +150,16 @@ if (Meteor.isServer) {
               }
           },
           function (error, result) {
-              if (error) { 
+              if (error) {
                   callback(error);
               } else {
                   callback(null, result.data);
-              }  
+              }
           }
         );
     });
-    
-    
+
+
     var syncUnregHook = Meteor.wrapAsync(function (id, callback) {
         HTTP.del('https://lrs.adlnet.gov/hooks/'+id,
           {
@@ -169,26 +169,42 @@ if (Meteor.isServer) {
               }
           },
           function (error, result) {
-              if (error) { 
+              if (error) {
                   callback(error);
               } else {
                   callback(null, result.data);
-              }  
+              }
           }
         );
     });
 
-    
+    var syncGetRegHook = Meteor.wrapAsync(function (callback) {
+        HTTP.get('https://lrs.adlnet.gov/hooks/',
+          {
+              auth: "tom:1234",
+              headers: {
+                  "Content-Type": "application/json"
+              }
+          },
+          function (error, result) {
+              if (error) {
+                  callback(error);
+              } else {
+                  callback(null, result.data);
+              }
+          }
+        );
+    });
+
+
     Meteor.methods({
         registerHook: function () {
-            var result;
             try {
-                result = syncRegHook();
+                return syncRegHook();
             } catch (e) {
                 console.log('fail reg hook');
                 console.log(e);
-            } finally {
-                return result;
+                throw new Meteor.Error(e);
             }
         },
         unregisterHook: function (id) {
@@ -201,9 +217,18 @@ if (Meteor.isServer) {
                 return undefined;
             }
         },
+        getRegisteredHook: function () {
+            try {
+                return syncGetRegHook();
+            } catch (e) {
+                console.log('failed to get registered hook');
+                console.log(e);
+                throw new Meteor.Error(e);
+            }
+        },
         purgeDB: function () {
             Statements.remove({});
         }
     });
 
-}// ending is server here 
+}// ending is server here
